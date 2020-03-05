@@ -1,0 +1,41 @@
+.carousel-xjc {
+    width: 100%;
+}
+
+@media (min-width: 992px){
+    .col-md-6 {
+        width: 80%;
+        margin-left: 10%;
+    }
+}
+
+
+.add-vip-user-container {
+   /* width: 100%;
+    height: 100%;
+    background-color: gainsboro;
+    !*#\opacity: 0.2;*!
+    display: none;
+    position: absolute;
+    left: 0px;
+    top: 0px;*/
+    /*z-index: 100;*/
+
+    display: none;
+}
+
+.form-container {
+    width: 50%;
+    height: 50%;
+    left: 25%;
+    top: 15%;
+    background-color: whitesmoke;
+    opacity: 1;
+    position: relative;
+}
+
+.input_validator {
+    margin-left:20%; font-size: x-small;
+    display: none;
+    color: red;
+}
