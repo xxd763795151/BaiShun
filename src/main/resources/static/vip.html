@@ -448,7 +448,8 @@
 </div>
 
 <!--vip用户信息更新弹框-->
-<div class="modal fade" id="modify_vip_user_modal" tabindex="-1" role="dialog" aria-labelledby="modify_vip_user_modal_label"
+<div class="modal fade" id="modify_vip_user_modal" tabindex="-1" role="dialog"
+     aria-labelledby="modify_vip_user_modal_label"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -523,7 +524,26 @@
         pass &= nullValidate('#tel');
         pass &= validateMoney('#money');
         if (pass) {
-            $("#add_vip_user_modal").modal('hide');
+            var data = {
+                'name': $('#name').val(),
+                'id': $('#id').val(),
+                'tel': $('#tel').val(),
+                'money': $('#money').val()
+            };
+            $.ajax({
+                'url': '/users/vip/save',
+                'type': 'POST',
+                'async': false,
+                'data': JSON.stringify(data),
+                'contentType': 'application/json',
+                'success': function () {
+                    alert('新增会员信息成功');
+                    $("#add_vip_user_modal").modal('hide');
+                },
+                'error': function (ignore, errorMessage) {
+                    alert('保存失败，错误消息：' + errorMessage);
+                }
+            });
         }
     }
 
