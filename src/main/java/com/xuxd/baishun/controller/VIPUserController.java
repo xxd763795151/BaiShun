@@ -5,10 +5,7 @@ import com.xuxd.baishun.service.IVIPUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Auther: 许晓东
@@ -33,5 +30,10 @@ public class VIPUserController extends BaseController {
             return fail("新增vip用户失败");
         }
         return success();
+    }
+
+    @GetMapping("/all")
+    public String findAll() {
+        return success(userService.findAll(), "success");
     }
 }

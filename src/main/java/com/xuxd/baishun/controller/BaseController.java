@@ -22,7 +22,7 @@ public class BaseController extends JSONObject {
         return success(null, returnMessage);
     }
 
-    protected String success(JSONObject data, String returnMessage) {
+    protected String success(Object data, String returnMessage) {
         JSONObject ret = new JSONObject();
         ret.put("data", data);
         ret.put(RETURN_CODE, SUCCESS_CODE);

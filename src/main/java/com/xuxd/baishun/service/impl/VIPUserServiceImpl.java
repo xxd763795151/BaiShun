@@ -6,6 +6,8 @@ import com.xuxd.baishun.service.IVIPUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Auther: 许晓东
  * @Date: 20-3-13 16:31
@@ -19,6 +21,10 @@ public class VIPUserServiceImpl implements IVIPUserService {
     @Override
     public boolean saveUser(VipUser user) {
         return vipUserDao.saveVipUser(user.getId(), user.getName(), user.getMoney(), user.getTel()) > 0;
-        //return vipUserDao.saveVipUser(user) > 0;
+    }
+
+    @Override
+    public List<VipUser> findAll() {
+        return vipUserDao.findAllVipUsers();
     }
 }

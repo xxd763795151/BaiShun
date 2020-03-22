@@ -200,7 +200,7 @@
             'info': true,
             'autoWidth': false,
             "ajax": {
-                "url": './data/vip_user_list.json',
+                "url": 'users/vip/all',
                 "dataSrc": function (json) {
                     for (var i = 0, ien = json.data.length; i < ien; i++) {
                         var data = json.data[i];
@@ -537,8 +537,9 @@
                 'data': JSON.stringify(data),
                 'contentType': 'application/json',
                 'success': function () {
-                    alert('新增会员信息成功');
                     $("#add_vip_user_modal").modal('hide');
+                    alert('新增会员信息成功');
+                    window.location.reload();
                 },
                 'error': function (ignore, errorMessage) {
                     alert('保存失败，错误消息：' + errorMessage);

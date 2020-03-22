@@ -5,7 +5,7 @@ CREATE TABLE t_vip_users (
   name VARCHAR(40) NOT NULL,
   money DECIMAL(18, 2) NOT NULL,
   tel VARCHAR(12) NOT NULL,
-  updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
+  update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
 );
 
 -- select * from t_vip_users;
