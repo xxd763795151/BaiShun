@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * @Description:
  */
 @Entity
-//@Table(name = "t_vip_users")
+@Table(name = "t_vip_users")
 public class VipUser implements Serializable {
 
     private static final long serialVersionUID = -2663252230706657072L;

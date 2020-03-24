@@ -1,8 +1,11 @@
 package com.xuxd.baishun.service;
 
+import com.xuxd.baishun.beans.OutObject;
 import com.xuxd.baishun.beans.VipUser;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: 许晓东
@@ -11,7 +14,9 @@ import java.util.List;
  */
 public interface IVIPUserService {
 
-    boolean saveUser(VipUser user);
+    OutObject saveUser(VipUser user);
 
     List<VipUser> findAll();
+
+    OutObject updateMoney(String id, BigDecimal diffMoney, boolean isRecharge);
 }

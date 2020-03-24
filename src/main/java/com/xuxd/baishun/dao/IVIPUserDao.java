@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Auther: 许晓东
@@ -24,4 +25,11 @@ public interface IVIPUserDao extends JpaRepository<VipUser, String> {
 
     @Query(value = "select id, name, money, tel, update_time from t_vip_users", nativeQuery = true)
     List<VipUser> findAllVipUsers();
+
+    @Transactional
+    @Modifying
+    @Query(value = "update t_vip_users set money = :money where id = :id", nativeQuery = true)
+    int updateMoneyById(@Param("id") String id, @Param("money") BigDecimal money);
+
+    Optional<VipUser> findById(String id);
 }

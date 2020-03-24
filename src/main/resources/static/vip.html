@@ -536,7 +536,12 @@
                 'async': false,
                 'data': JSON.stringify(data),
                 'contentType': 'application/json',
-                'success': function () {
+                'dataType': 'json',
+                'success': function (json) {
+                    if (json.rtnCode != 0) {
+                        alert(json.rtnMessage);
+                        return false;
+                    }
                     $("#add_vip_user_modal").modal('hide');
                     alert('新增会员信息成功');
                     window.location.reload();
@@ -549,13 +554,56 @@
     }
 
     function deductionMoney() {
-        if (validateMoney('#vip_user_deduction_modal form #deduction_money'))
-            $("#vip_user_deduction_modal").modal('hide');
+        if (validateMoney('#vip_user_deduction_modal form #deduction_money')) {
+            var id = $('#vip_user_deduction_modal form span[name="deduction_id"]').text();
+            var money = $('#vip_user_deduction_modal form #deduction_money').val();
+            $.ajax({
+                'url': '/users/vip/money/update',
+                'type': 'POST',
+                'async': false,
+                'data': {"id": id, "money": money, "isRecharge": false},
+                'dataType': 'json',
+                'success': function (json) {
+                    debugger;
+                    if (json.rtnCode != 0) {
+                        alert(json.rtnMessage);
+                    } else {
+                        $("#vip_user_deduction_modal").modal('hide');
+                        alert('扣费成功');
+                        window.location.reload();
+                    }
+                },
+                'error': function (ignore, errorMessage) {
+                    alert('扣费失败，错误消息：' + errorMessage);
+                }
+            });
+        }
     }
 
     function rechargeMoney() {
-        if (validateMoney('#vip_user_recharge_modal form #recharge_money'))
-            $("#vip_user_recharge_modal").modal('hide');
+        if (validateMoney('#vip_user_recharge_modal form #recharge_money')) {
+            var id = $('#vip_user_recharge_modal form span[name="recharge_id"]').text();
+            var money = $('#vip_user_recharge_modal form #recharge_money').val();
+            $.ajax({
+                'url': '/users/vip/money/update',
+                'type': 'POST',
+                'async': false,
+                'data': {"id": id, "money": money, "isRecharge": true},
+                'dataType': 'json',
+                'success': function (json) {
+                    if (json.rtnCode != 0) {
+                        alert(json.rtnMessage);
+                        return false;
+                    }
+                    $("#vip_user_recharge_modal").modal('hide');
+                    alert('充值成功');
+                    window.location.reload();
+                },
+                'error': function (ignore, errorMessage) {
+                    alert('充值失败，错误消息：' + errorMessage);
+                }
+            });
+        }
     }
 
     function hide_hint(id) {
