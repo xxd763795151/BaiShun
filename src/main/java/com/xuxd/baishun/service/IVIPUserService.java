@@ -19,4 +19,6 @@ public interface IVIPUserService {
     List<VipUser> findAll();
 
     OutObject updateMoney(String id, BigDecimal diffMoney, boolean isRecharge);
+
+    OutObject updateNameOrTelById(String id, String name, String tel);
 }

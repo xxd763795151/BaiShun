@@ -32,4 +32,9 @@ public interface IVIPUserDao extends JpaRepository<VipUser, String> {
     int updateMoneyById(@Param("id") String id, @Param("money") BigDecimal money);
 
     Optional<VipUser> findById(String id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update t_vip_users set name = ?2 , tel = ?3 where id = ?1", nativeQuery = true)
+    int updateNameOrTelById(@Param("id") String id, @Param("name") String name, @Param("tel") String tel);
 }

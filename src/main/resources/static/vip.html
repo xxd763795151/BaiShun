@@ -236,6 +236,8 @@
                                 keyboard: false
                             })
                             $('#modify_vip_user_modal form span[name="id"]').text(this.id);
+                            $('#modify_vip_user_modal form input[name="name"]').val(this.name);
+                            $('#modify_vip_user_modal form input[name="tel"]').val(this.tel);
 
                         }
                         $('#vip-user-list').on('click', 'tbody #' + modifyBtn, modify.bind(data))
@@ -245,13 +247,13 @@
             },
             "columns": [
                 {
-                    "title": "姓名",
-                    "data": "name",
+                    "title": "卡号",
+                    "data": "id",
                     "bSearchable": true
                 },
                 {
-                    "title": "卡号",
-                    "data": "id",
+                    "title": "姓名",
+                    "data": "name",
                     "bSearchable": true
                 },
                 {
@@ -470,7 +472,7 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">名字</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="modify_name" placeholder="请输入姓名"
+                            <input type="text" class="form-control" name="name" placeholder="请输入姓名"
                                    onfocus="hide_hint('#modify_name');" onblur="nullValidate('#modify_name')">
                         </div>
                         <label class="input_validator">* 名字不能为空</label>
@@ -478,7 +480,7 @@
                     <div class="form-group">
                         <label for="tel" class="col-sm-2 control-label">手机号</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="modify_tel" placeholder="请输入手机号"
+                            <input type="text" class="form-control" name="tel" placeholder="请输入手机号"
                                    onfocus="hide_hint('#modify_tel');" onblur="nullValidate('#modify_tel')">
                         </div>
                         <label class="input_validator">* 手机号不能为空</label>
@@ -487,7 +489,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" onclick="addVip();">提交</button>
+                <button type="button" class="btn btn-primary" onclick="updateVip();">提交</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -518,8 +520,7 @@
     }
 
     function addVip() {
-        var pass = false;
-        pass = nullValidate('#name');
+        var pass = nullValidate('#name');
         pass &= nullValidate('#id');
         pass &= nullValidate('#tel');
         pass &= validateMoney('#money');
@@ -544,6 +545,43 @@
                     }
                     $("#add_vip_user_modal").modal('hide');
                     alert('新增会员信息成功');
+                    window.location.reload();
+                },
+                'error': function (ignore, errorMessage) {
+                    alert('保存失败，错误消息：' + errorMessage);
+                }
+            });
+        }
+    }
+
+    function updateVip() {
+        var pass = nullValidate('#modify_vip_user_modal form input[name="name"]');
+        pass &= nullValidate('#modify_vip_user_modal form input[name="tel"]');
+
+        if (pass) {
+            var id = $('#modify_vip_user_modal form span[name="id"]').text();
+            var name = $('#modify_vip_user_modal form input[name="name"]').val();
+            var tel = $('#modify_vip_user_modal form input[name="tel"]').val();
+
+            var data = {
+                'name': name,
+                'id': id,
+                'tel': tel
+            };
+            $.ajax({
+                'url': '/users/vip/name/tel/update',
+                'type': 'POST',
+                'async': false,
+                'data': JSON.stringify(data),
+                'contentType': 'application/json',
+                'dataType': 'json',
+                'success': function (json) {
+                    if (json.rtnCode != 0) {
+                        alert(json.rtnMessage);
+                        return false;
+                    }
+                    $("#modify_vip_user_modal").modal('hide');
+                    alert('更新会员信息成功');
                     window.location.reload();
                 },
                 'error': function (ignore, errorMessage) {

@@ -72,4 +72,10 @@ public class VIPUserServiceImpl implements IVIPUserService {
         vipUserDao.updateMoneyById(id, afterUpdateMoney);
         return outObject.success();
     }
+
+    @Override
+    public OutObject updateNameOrTelById(String id, String name, String tel) {
+        OutObject outObject = new OutObject();
+        return vipUserDao.updateNameOrTelById(id, name, tel) > 0 ? outObject.success() : outObject.fail().setRtnMessage("更新失败");
+    }
 }

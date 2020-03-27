@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * @Auther: 许晓东
@@ -37,7 +38,19 @@ public class VIPUserController extends BaseController {
 
     @PostMapping("/money/update")
     public OutObject updateMoney(@RequestParam String id, @RequestParam BigDecimal money, @RequestParam boolean isRecharge) {
-
         return userService.updateMoney(id, money, isRecharge);
+    }
+
+    @PostMapping("/name/tel/update")
+    public OutObject updateNameOrTelById(@RequestBody VipUser user) {
+        try{
+            Objects.requireNonNull(user.getId());
+            Objects.requireNonNull(user.getName());
+            Objects.requireNonNull(user.getTel());
+        }catch (NullPointerException e) {
+            LOGGER.error("更新信息不能为空： " + user, e);
+            return new OutObject().fail().setRtnMessage("信息不能为空");
+        }
+        return userService.updateNameOrTelById(user.getId(), user.getName(), user.getTel());
     }
 }
