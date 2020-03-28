@@ -39,3 +39,7 @@
     display: none;
     color: red;
 }
+.custom-toast-top-center {
+    top: 20%;
+    right: 40%;
+}

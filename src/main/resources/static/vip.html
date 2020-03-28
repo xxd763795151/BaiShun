@@ -156,6 +156,14 @@
 
 <!-- jQuery 3 -->
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+
+<!-- toastr -->
+<!--<link href="plugins/toastr/toastr.css" rel="stylesheet">-->
+<!--<script src="plugins/toastr/toastr.min.js"></script>-->
+<link href="https://cdn.bootcss.com/toastr.js/2.0.3/css/toastr.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/toastr.js/2.1.4/toastr.min.js"></script>
+
 <!-- jQuery UI 1.11.4 -->
 <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
@@ -189,113 +197,6 @@
 <script src="./bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="./dist/js/adminlte.min.js"></script>
-<!-- page script -->
-<script>
-    $(function () {
-        $('#vip-user-list').DataTable({
-            'paging': true,
-            'lengthChange': false,
-            'searching': true,
-            'ordering': false,
-            'info': true,
-            'autoWidth': false,
-            "ajax": {
-                "url": 'users/vip/all',
-                "dataSrc": function (json) {
-                    for (var i = 0, ien = json.data.length; i < ien; i++) {
-                        var data = json.data[i];
-                        var rechargeBtn = "recharge" + data.id;
-                        var deductionBtn = "deduction" + data.id;
-                        var modifyBtn = "modify" + data.id;
-                        data.op = "<button type=\"button\" class=\"btn  btn-sm   btn-primary\"" + " id=" + deductionBtn + " >扣费</button>  " +
-                            " <button type=\"button\" class=\"btn  btn-sm  btn-success\"" + " id=" + rechargeBtn + " >充值</button>" +
-                            " <button type=\"button\" class=\"btn  btn-sm  btn-warning\"" + " id=" + modifyBtn + " >修改信息</button>";
-                        var recharge = function () {
-                            $('#vip_user_recharge_modal').modal({
-                                keyboard: false
-                            })
-                            $('#vip_user_recharge_modal form span[name="recharge_name"]').text(this.name);
-                            $('#vip_user_recharge_modal form span[name="recharge_id"]').text(this.id);
-                            $('#vip_user_recharge_modal form span[name="recharge_current_remain_money"]').text(this.money);
-                            $('#vip_user_recharge_modal form #recharge_money').val(0.00);
-                        }
-                        $('#vip-user-list').on('click', 'tbody #' + rechargeBtn, recharge.bind(data))
-                        var deduction = function () {
-                            $('#vip_user_deduction_modal').modal({
-                                keyboard: false
-                            })
-                            $('#vip_user_deduction_modal form span[name="deduction_name"]').text(this.name);
-                            $('#vip_user_deduction_modal form span[name="deduction_id"]').text(this.id);
-                            $('#vip_user_deduction_modal form span[name="deduction_current_remain_money"]').text(this.money);
-                            $('#vip_user_deduction_modal form #deduction_money').val(0.00);
-                        }
-                        $('#vip-user-list').on('click', 'tbody #' + deductionBtn, deduction.bind(data))
-
-                        var modify = function () {
-                            $('#modify_vip_user_modal').modal({
-                                keyboard: false
-                            })
-                            $('#modify_vip_user_modal form span[name="id"]').text(this.id);
-                            $('#modify_vip_user_modal form input[name="name"]').val(this.name);
-                            $('#modify_vip_user_modal form input[name="tel"]').val(this.tel);
-
-                        }
-                        $('#vip-user-list').on('click', 'tbody #' + modifyBtn, modify.bind(data))
-                    }
-                    return json.data;
-                }
-            },
-            "columns": [
-                {
-                    "title": "卡号",
-                    "data": "id",
-                    "bSearchable": true
-                },
-                {
-                    "title": "姓名",
-                    "data": "name",
-                    "bSearchable": true
-                },
-                {
-                    "title": "手机号",
-                    "data": "tel",
-                    "bSearchable": true
-                },
-                {
-                    "title": "余额",
-                    "data": "money",
-                    "bSearchable": false
-                },
-                {
-                    "title": "更新日期",
-                    "data": "updateTime",
-                    "bSearchable": false
-                },
-                {
-                    "title": "操作",
-                    "data": "op",
-                    "bSearchable": false
-                }
-            ],
-            "stripeClasses": ['name', 'id', 'tel'],
-            "language": {
-                "paginate": {
-                    "previous": "上一页",
-                    "next": "下一页",
-                    "infoEmpty": "没有数据",
-                    "first": "第一页",
-                    "last": "最后一页"
-                },
-                "zeroRecords": "没有匹配信息",
-                "loadingRecords": "请等待 - 加载中...",
-                "sInfo": "显示第 _START_ 到 _END_ 条， 共 _TOTAL_ 条",
-                "search": "搜索："
-            }
-        })
-    })
-
-
-</script>
 
 <!--新增vip弹框-->
 <div class="modal fade" id="add_vip_user_modal" tabindex="-1" role="dialog" aria-labelledby="add_vip_user_modal_label"
@@ -434,7 +335,7 @@
                     <div class="form-group">
                         <label for="money" class="col-sm-2 control-label">充值金额</label>
                         <div class="col-sm-10">
-                            <input type="text" autofocus class="form-control" id="recharge_money" placeholder="请输入充值金额"
+                            <input type="text" autofocus="autofocus" class="form-control" id="recharge_money" placeholder="请输入充值金额"
                                    onfocus="hide_hint('#recharge_money');" onblur="validateMoney('#recharge_money')">
                         </div>
                         <label class="input_validator">* 请输入有效金额数字</label>
@@ -497,6 +398,134 @@
 
 
 <script>
+    $(function () {
+        //toastr
+
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "custom-toast-top-center",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        $('#vip-user-list').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': true,
+            'ordering': false,
+            'info': true,
+            'autoWidth': false,
+            "ajax": {
+                "url": 'users/vip/all',
+                "dataSrc": function (json) {
+                    for (var i = 0, ien = json.data.length; i < ien; i++) {
+                        var data = json.data[i];
+                        var rechargeBtn = "recharge" + data.id;
+                        var deductionBtn = "deduction" + data.id;
+                        var modifyBtn = "modify" + data.id;
+                        data.op = "<button type=\"button\" class=\"btn  btn-sm   btn-primary\"" + " id=" + deductionBtn + " >扣费</button>  " +
+                            " <button type=\"button\" class=\"btn  btn-sm  btn-success\"" + " id=" + rechargeBtn + " >充值</button>" +
+                            " <button type=\"button\" class=\"btn  btn-sm  btn-warning\"" + " id=" + modifyBtn + " >修改信息</button>";
+                        var recharge = function () {
+                            $('#vip_user_recharge_modal').modal({
+                                keyboard: false
+                            })
+                            $('#vip_user_recharge_modal form span[name="recharge_name"]').text(this.name);
+                            $('#vip_user_recharge_modal form span[name="recharge_id"]').text(this.id);
+                            $('#vip_user_recharge_modal form span[name="recharge_current_remain_money"]').text(this.money);
+                            $('#vip_user_recharge_modal form #recharge_money').val(0.00);
+                        }
+                        $('#vip-user-list').on('click', 'tbody #' + rechargeBtn, recharge.bind(data))
+                        var deduction = function () {
+                            $('#vip_user_deduction_modal').modal({
+                                keyboard: false
+                            })
+                            $('#vip_user_deduction_modal form span[name="deduction_name"]').text(this.name);
+                            $('#vip_user_deduction_modal form span[name="deduction_id"]').text(this.id);
+                            $('#vip_user_deduction_modal form span[name="deduction_current_remain_money"]').text(this.money);
+                            $('#vip_user_deduction_modal form #deduction_money').val(0.00);
+                        }
+                        $('#vip-user-list').on('click', 'tbody #' + deductionBtn, deduction.bind(data))
+
+                        var modify = function () {
+                            $('#modify_vip_user_modal').modal({
+                                keyboard: false
+                            })
+                            $('#modify_vip_user_modal form span[name="id"]').text(this.id);
+                            $('#modify_vip_user_modal form input[name="name"]').val(this.name);
+                            $('#modify_vip_user_modal form input[name="tel"]').val(this.tel);
+
+                        }
+                        $('#vip-user-list').on('click', 'tbody #' + modifyBtn, modify.bind(data))
+                    }
+                    return json.data;
+                }
+            },
+            "columns": [
+                {
+                    "title": "卡号",
+                    "data": "id",
+                    "bSearchable": true
+                },
+                {
+                    "title": "姓名",
+                    "data": "name",
+                    "bSearchable": true
+                },
+                {
+                    "title": "手机号",
+                    "data": "tel",
+                    "bSearchable": true
+                },
+                {
+                    "title": "余额",
+                    "data": "money",
+                    "bSearchable": false
+                },
+                {
+                    "title": "更新日期",
+                    "data": "updateTime",
+                    "bSearchable": false
+                },
+                {
+                    "title": "操作",
+                    "data": "op",
+                    "bSearchable": false
+                }
+            ],
+            "stripeClasses": ['name', 'id', 'tel'],
+            "language": {
+                "paginate": {
+                    "previous": "上一页",
+                    "next": "下一页",
+                    "infoEmpty": "没有数据",
+                    "first": "第一页",
+                    "last": "最后一页"
+                },
+                "zeroRecords": "没有匹配信息",
+                "loadingRecords": "请等待 - 加载中...",
+                "sInfo": "显示第 _START_ 到 _END_ 条， 共 _TOTAL_ 条",
+                "search": "搜索："
+            }
+        })
+    })
+
+    function dataTableRefresh() {
+        $('#vip-user-list').dataTable()._fnAjaxUpdate();
+        $('#vip-user-list_filter input[type="search"]').val('');
+    }
+
 
     $('#add_vip_user_modal').on('hide.bs.modal',
         function () {
@@ -534,21 +563,21 @@
             $.ajax({
                 'url': '/users/vip/save',
                 'type': 'POST',
-                'async': false,
+                'async': true,
                 'data': JSON.stringify(data),
                 'contentType': 'application/json',
                 'dataType': 'json',
                 'success': function (json) {
                     if (json.rtnCode != 0) {
-                        alert(json.rtnMessage);
+                        toastr.error(json.rtnMessage);
                         return false;
                     }
                     $("#add_vip_user_modal").modal('hide');
-                    alert('新增会员信息成功');
-                    window.location.reload();
+                    toastr.success('新增会员信息成功');
+                    dataTableRefresh();
                 },
                 'error': function (ignore, errorMessage) {
-                    alert('保存失败，错误消息：' + errorMessage);
+                    toastr.error('保存失败，错误消息：' + errorMessage);
                 }
             });
         }
@@ -571,21 +600,21 @@
             $.ajax({
                 'url': '/users/vip/name/tel/update',
                 'type': 'POST',
-                'async': false,
+                'async': true,
                 'data': JSON.stringify(data),
                 'contentType': 'application/json',
                 'dataType': 'json',
                 'success': function (json) {
                     if (json.rtnCode != 0) {
-                        alert(json.rtnMessage);
+                        toastr.error(json.rtnMessage);
                         return false;
                     }
                     $("#modify_vip_user_modal").modal('hide');
-                    alert('更新会员信息成功');
-                    window.location.reload();
+                    toastr.success('更新会员信息成功');
+                    dataTableRefresh();
                 },
                 'error': function (ignore, errorMessage) {
-                    alert('保存失败，错误消息：' + errorMessage);
+                    toastr.error('保存失败，错误消息：' + errorMessage);
                 }
             });
         }
@@ -598,21 +627,19 @@
             $.ajax({
                 'url': '/users/vip/money/update',
                 'type': 'POST',
-                'async': false,
                 'data': {"id": id, "money": money, "isRecharge": false},
                 'dataType': 'json',
                 'success': function (json) {
-                    debugger;
                     if (json.rtnCode != 0) {
-                        alert(json.rtnMessage);
+                        toastr.error(json.rtnMessage);
                     } else {
                         $("#vip_user_deduction_modal").modal('hide');
-                        alert('扣费成功');
-                        window.location.reload();
+                        toastr.success('扣费成功');
+                        dataTableRefresh();
                     }
                 },
                 'error': function (ignore, errorMessage) {
-                    alert('扣费失败，错误消息：' + errorMessage);
+                    toastr.error('扣费失败，错误消息：' + errorMessage);
                 }
             });
         }
@@ -625,20 +652,19 @@
             $.ajax({
                 'url': '/users/vip/money/update',
                 'type': 'POST',
-                'async': false,
                 'data': {"id": id, "money": money, "isRecharge": true},
                 'dataType': 'json',
                 'success': function (json) {
                     if (json.rtnCode != 0) {
-                        alert(json.rtnMessage);
+                        toastr.error(json.rtnMessage);
                         return false;
                     }
                     $("#vip_user_recharge_modal").modal('hide');
-                    alert('充值成功');
-                    window.location.reload();
+                    toastr.success('充值成功');
+                    dataTableRefresh();
                 },
                 'error': function (ignore, errorMessage) {
-                    alert('充值失败，错误消息：' + errorMessage);
+                    toastr.error('充值失败，错误消息：' + errorMessage);
                 }
             });
         }
