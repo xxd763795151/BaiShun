@@ -7,12 +7,12 @@ $(function () {
         'info': true,
         'autoWidth': false,
         "ajax": {
-            "url": 'users/vip/all'
+            "url": 'user/info/log/list'
         },
         "columns": [
             {
                 "title": "卡号",
-                "data": "id",
+                "data": "userId",
                 "bSearchable": false
             },
             {
@@ -26,9 +26,29 @@ $(function () {
                 "bSearchable": true
             },
             {
-                "title": "余额",
-                "data": "money",
-                "bSearchable": false
+                "title": "变更类型",
+                "data": "type",
+                "bSearchable": false,
+                "render": function (data, type, full) {
+                    var val = data;
+                    switch (data) {
+                        case 'create':
+                            val = '新建用户';
+                            break;
+                        case 'recharge':
+                            val = '充值';
+                            break;
+                        case 'deduction':
+                            val = '扣费';
+                            break;
+                        case 'update':
+                            val = '信息变更';
+                            break;
+                        default:
+                            break;
+                    }
+                    return val;
+                }
             },
             {
                 "title": "更新日期",
@@ -37,7 +57,7 @@ $(function () {
             },
             {
                 "title": "操作信息",
-                "data": "money",
+                "data": "log",
                 "bSearchable": false
             }
         ],

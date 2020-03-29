@@ -1,7 +1,9 @@
 package com.xuxd.baishun.service.impl;
 
+import com.xuxd.baishun.beans.OperationType;
 import com.xuxd.baishun.beans.OutObject;
 import com.xuxd.baishun.beans.VipUser;
+import com.xuxd.baishun.common.OperationLog;
 import com.xuxd.baishun.dao.IVIPUserDao;
 import com.xuxd.baishun.service.IVIPUserService;
 import org.slf4j.Logger;
@@ -28,6 +30,8 @@ public class VIPUserServiceImpl implements IVIPUserService {
     private IVIPUserDao vipUserDao;
 
     @Override
+    @OperationLog(id = "#{id}", type = OperationType.create,
+            content = "新建用户，id=#{id}, 姓名=#{name}，电话=#{tel}，充值金额=#{money}")
     public OutObject saveUser(VipUser user) {
         OutObject outObject = new OutObject();
         Optional<VipUser> optional = vipUserDao.findById(user.getId());
@@ -53,7 +57,9 @@ public class VIPUserServiceImpl implements IVIPUserService {
     }
 
     @Override
-    public OutObject updateMoney(String id, BigDecimal diffMoney, boolean isRecharge) {
+    @OperationLog(id = "#{1}", type = OperationType.recharge,
+            content = "特殊处理，此处不处理")
+    public OutObject updateMoney(String id, BigDecimal diffMoney, Boolean isRecharge) {
         OutObject outObject = new OutObject();
         Optional<VipUser> optional = vipUserDao.findById(id);
         if (!optional.isPresent()) {
@@ -74,6 +80,7 @@ public class VIPUserServiceImpl implements IVIPUserService {
     }
 
     @Override
+    @OperationLog(id = "#{1}", type = OperationType.update, content = "id为#{1}的用户信息变更，变更后姓名为#{2}，电话为#{3}")
     public OutObject updateNameOrTelById(String id, String name, String tel) {
         OutObject outObject = new OutObject();
         return vipUserDao.updateNameOrTelById(id, name, tel) > 0 ? outObject.success() : outObject.fail().setRtnMessage("更新失败");
