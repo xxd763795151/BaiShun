@@ -53,4 +53,17 @@ public class VIPUserController extends BaseController {
         }
         return userService.updateNameOrTelById(user.getId(), user.getName(), user.getTel());
     }
+
+    @GetMapping("/test")
+    public OutObject test() {
+//        for (int i = 0; i < 1000; i++) {
+//            VipUser user = new VipUser();
+//            user.setId("" + System.currentTimeMillis() + i);
+//            user.setName("xu" + i);
+//            user.setMoney(new BigDecimal(100+ i));
+//            user.setTel("187" + i);
+//            userService.saveUser(user);
+//        }
+        return new OutObject().success();
+    }
 }
