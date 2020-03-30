@@ -30,4 +30,10 @@ public class UserInfoOperationLogServiceImpl implements IUserInfoOperationLogSer
     public List<UserInfoOperationLog> finaAllLog() {
         return userInfoOperationLogDao.findAllLog();
     }
+
+    @Override
+    public OutObject deleteLog(int intervalDays) {
+        int count = userInfoOperationLogDao.deleteLog(intervalDays);
+        return new OutObject().success().setRtnMessage(String.format("删除完成，本次删除%d条", count));
+    }
 }

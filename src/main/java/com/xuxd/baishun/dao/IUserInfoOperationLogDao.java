@@ -24,4 +24,9 @@ public interface IUserInfoOperationLogDao extends JpaRepository<UserInfoOperatio
     @Query(value = "select log.id as id, log.user_id as userId, log.type as type, log.update_time as updateTime, log.log as log, user.name as name, user.tel as tel from t_user_info_updated_log log join t_vip_users user on log.user_id = user.id order by updateTime desc", nativeQuery = true)
     List<UserInfoOperationLog> findAllLog();
 
+    @Transactional
+    @Query(value = "delete from t_user_info_updated_log where TIMESTAMPDIFF(DAY, update_time, CURRENT_TIMESTAMP()) > :intervalDays", nativeQuery = true)
+    @Modifying
+    int deleteLog(@Param("intervalDays") int intervalDays);
+
 }

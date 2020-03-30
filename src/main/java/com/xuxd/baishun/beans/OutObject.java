@@ -40,4 +40,12 @@ public class OutObject {
         this.rtnCode = -9999;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "OutObject{" +
+                "rtnCode=" + rtnCode +
+                ", rtnMessage='" + rtnMessage + '\'' +
+                '}';
+    }
 }

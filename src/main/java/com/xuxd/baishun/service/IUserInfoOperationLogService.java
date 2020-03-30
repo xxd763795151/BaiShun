@@ -14,4 +14,6 @@ public interface IUserInfoOperationLogService {
     OutObject saveLog(UserInfoOperationLog log);
 
     List<UserInfoOperationLog> finaAllLog();
+
+    OutObject deleteLog(int intervalDays);
 }
