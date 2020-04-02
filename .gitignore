@@ -26,3 +26,11 @@ hs_err_pid*
 .idea/
 *.iml
 target/
+
+# c++
+*.suo
+*.sdf
+Debug/
+Release/
+ipch/
+*.opensdf
