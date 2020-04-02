@@ -52,8 +52,8 @@ public class ScheduledTask implements SmartInitializingSingleton {
                 String content = "附件为备份的数据，只会保存7天，及时下载";
                 Map<String, String> name2paths = new HashMap<>();
                 name2paths.put(environment.getProperty(Key.BACKUP_NAME), environment.getProperty(Key.BACKUP_PATH));
-                mailClient.sendWithAttachment(environment.getProperty(Key.MAIL_FROM), environment.getProperty(Key.MAIL_TO), subject, content, name2paths);
-                LOGGER.info("发送备份数据");
+                OutObject outObject = mailClient.sendWithAttachment(environment.getProperty(Key.MAIL_FROM), environment.getProperty(Key.MAIL_TO), subject, content, name2paths);
+                LOGGER.info("发送备份数据" + (outObject.getRtnCode() == 0 ? "成功" : "失败"));
             }, 0, Integer.valueOf(environment.getProperty(Key.BACKUP_INTERVAL, "12")), TimeUnit.HOURS);
 
         }
