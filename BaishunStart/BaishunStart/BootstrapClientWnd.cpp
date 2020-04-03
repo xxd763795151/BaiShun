@@ -35,6 +35,9 @@ void BootstrapClientWnd::Notify(TNotifyUI& msg)
 	if (msg.sType == _T("click")) {
 		if (msg.pSender->GetName() == _T("closebtn")) {
 			// 关闭web服务器
+			if (!m_bWebPortIsUsed && !m_bWebStarted) {
+				ExitProcess(0); return;
+			}
 			if (m_httpClient->connect()) {
 				char * szSendMsg = "GET /system/exit HTTP/1.1\r\nHost: 127.0.0.1\r\nCache-Control: no-cache\r\nAccept: */*\r\nConnection: close\r\n\r\n";
 				bool done = m_httpClient->send(szSendMsg);
@@ -46,6 +49,9 @@ void BootstrapClientWnd::Notify(TNotifyUI& msg)
 					return;
 				}
 			}
+			else {
+				MessageBox(NULL, m_httpClient->ErrorMsg(), _T("警告"), MB_OK | MB_ICONWARNING);
+			}
 		}
 		if (msg.pSender == m_pStartBtn){
 			std::thread thread(&BootstrapClientWnd::Start, this);
@@ -55,6 +61,9 @@ void BootstrapClientWnd::Notify(TNotifyUI& msg)
 		if (msg.pSender == m_pMinBtn)
 		{
 			SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0); return;
+		}
+		if (msg.pSender == m_pCopyBtn) {
+			SetClip(m_pUrlEdit->GetText().GetData());
 		}
 	}
 	
@@ -183,14 +192,24 @@ void BootstrapClientWnd::Start() {
 
 	// detect the server port is occupied
 	if (m_httpClient->ServerPortIsOpen()) {
-		MessageBox(NULL, m_httpClient->ErrorMsg(), _T("警告"), MB_OK | MB_ICONWARNING);
-		m_httpClient->Clean();
-		ExitProcess(0);
+		TCHAR szBuf[0xff] = { 0 };
+		lstrcat(szBuf, m_httpClient->ErrorMsg());
+		lstrcat(szBuf, _T("，如要重启客户端，点击右上角退出按钮重新打开试一下"));
+		m_bWebPortIsUsed = true;
+
+		m_pProgress->SetText(_T(""));
+		m_pProgress->SetVisible(FALSE);
+		m_pStartBtn->SetText(_T("已启动"));
+		MessageBox(NULL, szBuf, _T("警告"), MB_OK | MB_ICONWARNING);
+		MergeUrl();
+		//m_httpClient->Clean();
+		//ExitProcess(0);
 		return;
 	}
+	m_bWebPortIsUsed = false;
 	TCHAR szPath[0xff];
 	CombineFilePath(m_config.ExePath(), _T("start.bat"), szPath, 0xff);
-	HINSTANCE instance = ShellExecute(NULL, _T("open"), szPath, NULL, NULL, SW_NORMAL);
+	HINSTANCE instance = ShellExecute(NULL, _T("open"), szPath, NULL, NULL, SW_HIDE);
 	//if (WinExec(szPath, SW_NORMAL) < 32) {
 	if ((DWORD)instance <= 32) {
 		MessageBox(NULL, _T("启动服务器失败，即将退出"), _T("警告"), MB_OK | MB_ICONWARNING);
@@ -232,8 +251,14 @@ void BootstrapClientWnd::Start() {
 	m_pProgress->SetText(_T(""));
 	m_pProgress->SetVisible(FALSE);
 	m_pStartBtn->SetText(_T("已启动"));
+	m_bWebStarted = true;
 
 	// merge url
+	MergeUrl();
+
+}
+
+void BootstrapClientWnd::MergeUrl() {
 	TCHAR szUrl[0xff] = { 0 };
 #ifdef UNICODE
 	swprintf_s(szUrl, _T("http://%s:%d/index.html"), m_config.ServerAddress(), m_config.Port());
@@ -243,6 +268,12 @@ void BootstrapClientWnd::Start() {
 	m_pUrlEdit->SetText(szUrl);
 	m_pUrlHoriLayout->SetVisible(TRUE);
 
+	HINSTANCE instance = ShellExecute(NULL, _T("open"), szUrl, NULL, NULL, SW_NORMAL);
+	int lastError = WSAGetLastError();
+	//if (WinExec(szPath, SW_NORMAL) < 32) {
+	if ((DWORD)instance <= 32) {
+		MessageBox(NULL, _T("打开浏览器失败， 请手动打开"), _T("提示"), MB_OK | MB_ICONHAND);
+	}
 }
 
 TCHAR * BootstrapClientWnd::CombineFilePath(TCHAR * first, TCHAR * second, TCHAR * out, int outsize) {
@@ -305,4 +336,24 @@ LRESULT BootstrapClientWnd::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lPa
 
 	bHandled = FALSE;
 	return 0;
+}
+
+void BootstrapClientWnd::SetClip(LPCTSTR szText){
+	OpenClipboard(0);
+	EmptyClipboard();
+
+	//MessageBox(NULL, szText, _T("title"), MB_OK | MB_ICONHAND);
+	TCHAR tmp[0xff];
+	lstrcpy(tmp, szText);
+	char * szMsg = m_config.TChar2Char(tmp);
+	int nSize = strlen(szMsg) + 1;
+	HGLOBAL hMem = ::GlobalAlloc(GHND, nSize);
+	byte* pData = (byte*)::GlobalLock(hMem);
+	memset(pData, 0, nSize);
+	memcpy(pData, szMsg, nSize - 1);
+	pData[nSize - 1] = '\0';
+	::GlobalUnlock(hMem);
+	::SetClipboardData(CF_TEXT, hMem);
+	::CloseClipboard();
+	::GlobalFree(hMem);
 }

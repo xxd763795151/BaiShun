@@ -37,6 +37,8 @@ public:
 
 private:
 	void Start();
+	void SetClip(LPCTSTR szText);
+	void MergeUrl();
 
 private:
 	CPaintManagerUI m_pmUI;
@@ -49,5 +51,8 @@ private:
 	CEditUI * m_pUrlEdit;
 
 	CHttpClient * m_httpClient = NULL;
+
+	bool m_bWebStarted = false;
+	bool m_bWebPortIsUsed = false;
 };
 
