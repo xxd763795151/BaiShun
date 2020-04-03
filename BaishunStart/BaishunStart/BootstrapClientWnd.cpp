@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BootstrapClientWnd.h"
 #include <thread>
+#include <shellapi.h>
 
 BootstrapClientWnd::BootstrapClientWnd()
 {
@@ -9,6 +10,19 @@ BootstrapClientWnd::BootstrapClientWnd()
 
 BootstrapClientWnd::~BootstrapClientWnd()
 {
+	if (m_httpClient != NULL) {
+		delete m_httpClient;
+	}
+}
+
+BootstrapClientWnd::BootstrapClientWnd(CConfig config) {
+	m_config = config;
+	m_httpClient = new CHttpClient(config);
+	int status = m_httpClient->init();
+	if (status != 0) {
+		MessageBox(NULL, m_httpClient->ErrorMsg(), _T("退出警告"), MB_OK | MB_ICONWARNING);
+		ExitProcess(0);
+	}
 }
 
 LPCTSTR BootstrapClientWnd::GetWindowClassName() const
@@ -19,7 +33,20 @@ LPCTSTR BootstrapClientWnd::GetWindowClassName() const
 void BootstrapClientWnd::Notify(TNotifyUI& msg)
 {
 	if (msg.sType == _T("click")) {
-		if (msg.pSender->GetName() == _T("closebtn")) { ExitProcess(0); return; }
+		if (msg.pSender->GetName() == _T("closebtn")) {
+			// 关闭web服务器
+			if (m_httpClient->connect()) {
+				char * szSendMsg = "GET /system/exit HTTP/1.1\r\nHost: 127.0.0.1\r\nCache-Control: no-cache\r\nAccept: */*\r\nConnection: close\r\n\r\n";
+				bool done = m_httpClient->send(szSendMsg);
+				if (!done) {
+					MessageBox(NULL, m_httpClient->ErrorMsg(), _T("警告"), MB_OK | MB_ICONWARNING);
+				}
+				else {
+					ExitProcess(0);
+					return;
+				}
+			}
+		}
 		if (msg.pSender == m_pStartBtn){
 			std::thread thread(&BootstrapClientWnd::Start, this);
 			thread.detach();
@@ -66,6 +93,7 @@ void BootstrapClientWnd::Init()
 	m_pUrlHoriLayout = static_cast<CHorizontalLayoutUI*>(m_pmUI.FindControl(_T("UrlHorizontalLayout")));
 	m_pCopyBtn = static_cast<CButtonUI*>(m_pmUI.FindControl(_T("copybtn")));
 	m_pMinBtn = static_cast<CButtonUI*>(m_pmUI.FindControl(_T("minbtn")));
+	m_pUrlEdit = static_cast<CEditUI*>(m_pmUI.FindControl(_T("urledit")));
 }
 
 void BootstrapClientWnd::OnPrepare()
@@ -152,18 +180,112 @@ void BootstrapClientWnd::Start() {
 	m_pStartBtn->SetText(_T("正在启动"));
 	m_pStartBtn->SetEnabled(FALSE);
 	m_pStartBtn->SetDisabledTextColor(0X008B00);
+
+	// detect the server port is occupied
+	if (m_httpClient->ServerPortIsOpen()) {
+		MessageBox(NULL, m_httpClient->ErrorMsg(), _T("警告"), MB_OK | MB_ICONWARNING);
+		m_httpClient->Clean();
+		ExitProcess(0);
+		return;
+	}
+	TCHAR szPath[0xff];
+	CombineFilePath(m_config.ExePath(), _T("start.bat"), szPath, 0xff);
+	HINSTANCE instance = ShellExecute(NULL, _T("open"), szPath, NULL, NULL, SW_NORMAL);
+	//if (WinExec(szPath, SW_NORMAL) < 32) {
+	if ((DWORD)instance <= 32) {
+		MessageBox(NULL, _T("启动服务器失败，即将退出"), _T("警告"), MB_OK | MB_ICONWARNING);
+		ExitProcess(0);
+		return;
+	}
+
+	bool started = false;
 	for (int i = 0; i <= 100; i++) {
 		m_pProgress->SetValue(i);
 		CDuiString text;
 		text.Format(_T("服务器启动中，进度：%d%%"), i);
 		m_pProgress->SetText(text);
-		Sleep(10);
+		if (i < 70) {
+			Sleep(150);
+		}
+		else if (!started && i == 99) {
+			if (!m_httpClient->ServerPortIsOpen()) {
+				i = 98;
+				Sleep(1000);
+			}
+			else
+			{
+				started = true;
+			}
+		}
+		else {
+			if (!started) {
+				if (m_httpClient->ServerPortIsOpen()) {
+					started = true;
+				}
+				Sleep(100);
+			}
+			else {
+				Sleep(10);
+			}
+		}
 	}
 	m_pProgress->SetText(_T(""));
 	m_pProgress->SetVisible(FALSE);
 	m_pStartBtn->SetText(_T("已启动"));
+
+	// merge url
+	TCHAR szUrl[0xff] = { 0 };
+#ifdef UNICODE
+	swprintf_s(szUrl, _T("http://%s:%d/index.html"), m_config.ServerAddress(), m_config.Port());
+#else
+	sprintf_s(szUrl, "http://s%:%d/index.html", m_config.ServerAddress(), m_config.Port());
+#endif
+	m_pUrlEdit->SetText(szUrl);
 	m_pUrlHoriLayout->SetVisible(TRUE);
 
+}
+
+TCHAR * BootstrapClientWnd::CombineFilePath(TCHAR * first, TCHAR * second, TCHAR * out, int outsize) {
+	//int len1 = lstrlen(first), len2 = lstrlen(second);
+	//int len = len1 + len2 + 1;
+	//TCHAR * out  = new TCHAR(len);
+	memset(out, 0, outsize);
+	lstrcat(out, first);
+	lstrcat(out, second);
+	//char * szOut = Tchar2Char(out);
+	//delete out;
+	return out;
+}
+
+CHAR * BootstrapClientWnd::Tchar2Char(TCHAR * src) {
+#ifdef UNICODE
+	return ConvertLPWSTRToLPSTR(src);
+#else
+	CHAR * szOut = new CHAR(lstrlen(src) + 1);
+	lstrcpy(szOut, src);
+	return szOut;
+#endif
+}
+
+
+CHAR* BootstrapClientWnd::ConvertLPWSTRToLPSTR(LPWSTR lpwszStrIn)
+{
+	LPSTR pszOut = NULL;
+	if (lpwszStrIn != NULL)
+	{
+		int nInputStrLen = wcslen(lpwszStrIn);
+
+		// Double NULL Termination
+		int nOutputStrLen = WideCharToMultiByte(CP_ACP, 0, lpwszStrIn, nInputStrLen, NULL, 0, 0, 0) + 2;
+		pszOut = new char[nOutputStrLen];
+
+		if (pszOut)
+		{
+			memset(pszOut, 0x00, nOutputStrLen);
+			WideCharToMultiByte(CP_ACP, 0, lpwszStrIn, nInputStrLen, pszOut, nOutputStrLen, 0, 0);
+		}
+	}
+	return pszOut;
 }
 
 LRESULT BootstrapClientWnd::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)

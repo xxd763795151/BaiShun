@@ -24,7 +24,7 @@
 				<HorizontalLayout name="UrlHorizontalLayout"  padding="0, -200, 0, 5" visible="false">
 					<VerticalLayout>
 						<Label text="复制下面链接在浏览器打开" float="true" pos="10, 0, 200, 42" textcolor="0xFFFF0000" />
-						<Edit text="http://localhost:8080/index.html" textcolor="0xFFFF0000" readonly="true" float="true" pos="10, 45, 300, 70" colorhsl="true" bkcolor="0x00000000" />
+						<Edit name="urledit" text="" textcolor="0xFFFF0000" readonly="true" float="true" pos="10, 45, 300, 70" colorhsl="true" bkcolor="0x00000000" />
 						<Button name="copybtn" text="复制" float="true" pos="10, 80, 70, 100" tooltip="点击这里启动服务器" normalimage="button_nor.bmp" hotimage="button_over.bmp" pushedimage="button_down.bmp" />
 					</VerticalLayout>
 				</HorizontalLayout>
