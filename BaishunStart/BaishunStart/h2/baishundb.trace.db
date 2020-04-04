@@ -1257,3 +1257,12 @@ delete from t_user_info_updated_log where TIMESTAMPDIFF(DAY, update_time, CURREN
 2020-04-03 18:41:30 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_USER_INFO_UPDATED_LOG" not found; SQL statement:
 delete from t_user_info_updated_log where TIMESTAMPDIFF(DAY, update_time, CURRENT_TIMESTAMP()) > ? [42102-199]
+2020-04-03 19:06:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_USER_INFO_UPDATED_LOG" not found; SQL statement:
+delete from t_user_info_updated_log where TIMESTAMPDIFF(DAY, update_time, CURRENT_TIMESTAMP()) > ? [42102-199]
+2020-04-03 19:07:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_VIP_USERS" not found; SQL statement:
+select id, name, money, tel, update_time from t_vip_users [42102-199]
+2020-04-03 19:07:05 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_USER_INFO_UPDATED_LOG" not found; SQL statement:
+select log.id as id, log.user_id as userId, log.type as type, log.update_time as updateTime, log.log as log, user.name as name, user.tel as tel from t_user_info_updated_log log join t_vip_users user on log.user_id = user.id order by updateTime desc [42102-199]

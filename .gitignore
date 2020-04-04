@@ -34,3 +34,5 @@ Debug/
 Release/
 ipch/
 *.opensdf
+*.trace.db
+*.db.bak

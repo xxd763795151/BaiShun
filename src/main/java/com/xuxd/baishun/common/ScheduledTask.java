@@ -48,18 +48,18 @@ public class ScheduledTask implements SmartInitializingSingleton {
         if (Boolean.valueOf(environment.getProperty(Key.BACKUP_ENABLE, "true"))) {
             LOGGER.info("开启数据定时备份任务");
             EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
-                String subject = "数据备份，7天有效，请及时下载";
-                String content = "附件为备份的数据，只会保存7天，及时下载";
+                String subject = "数据备份，7天有效，请及时下载" + System.currentTimeMillis();
+                String content = "附件为备份的数据，只会保存7天，及时下载。备份邮件，无需回复";
                 Map<String, String> name2paths = new HashMap<>();
-                name2paths.put(environment.getProperty(Key.BACKUP_NAME), environment.getProperty(Key.BACKUP_PATH));
+                name2paths.put(environment.getProperty(Key.BACKUP_NAME), environment.getProperty(Key.BACKUP_PATH) + ".bak");
                 OutObject outObject = mailClient.sendWithAttachment(environment.getProperty(Key.MAIL_FROM), environment.getProperty(Key.MAIL_TO), subject, content, name2paths);
                 LOGGER.info("发送备份数据" + (outObject.getRtnCode() == 0 ? "成功" : "失败"));
-            }, 0, Integer.valueOf(environment.getProperty(Key.BACKUP_INTERVAL, "12")), TimeUnit.HOURS);
+            }, 0, Integer.valueOf(environment.getProperty(Key.BACKUP_INTERVAL, "24")), TimeUnit.HOURS);
 
         }
     }
 
-    interface Key {
+    public interface Key {
         String INTERVAL_DAYS = "operation.log.save.interval.days";
         String DETECT_PERIOD = "operation.log.del.detect.period";
         String BACKUP_INTERVAL = "backup.interval";
