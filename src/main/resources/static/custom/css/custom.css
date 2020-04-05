@@ -24,6 +24,10 @@
     display: none;
 }
 
+#add_vip_user_modal form #type input[type='radio'] {
+    margin-left: 5%;
+}
+
 .form-container {
     width: 50%;
     height: 50%;

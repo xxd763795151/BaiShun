@@ -19,11 +19,16 @@ import java.util.Optional;
 public interface IVIPUserDao extends JpaRepository<VipUser, String> {
 
     @Transactional
-    @Query(value = "insert into t_vip_users(id, name, money, tel) values (:id, :name, :money, :tel)", nativeQuery = true)
+    @Query(value = "insert into t_vip_users(id, name, money, tel, type, remarks) values (:id, :name, :money, :tel, :type, :remarks)", nativeQuery = true)
     @Modifying
-    int saveVipUser(@Param("id") String id, @Param("name") String name, @Param("money") BigDecimal money, @Param("tel") String tel);
+    int saveVipUser(@Param("id") String id,
+                    @Param("name") String name,
+                    @Param("money") BigDecimal money,
+                    @Param("tel") String tel,
+                    @Param("type") int type,
+                    @Param("remarks") String remarks);
 
-    @Query(value = "select id, name, money, tel, update_time from t_vip_users", nativeQuery = true)
+    @Query(value = "select id, name, money, tel, update_time, type, remarks from t_vip_users order by update_time desc", nativeQuery = true)
     List<VipUser> findAllVipUsers();
 
     @Transactional

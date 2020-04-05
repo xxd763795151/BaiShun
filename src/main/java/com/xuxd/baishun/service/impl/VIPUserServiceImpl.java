@@ -39,7 +39,7 @@ public class VIPUserServiceImpl implements IVIPUserService {
         int save = 0;
         if (!hasExist) {
             try {
-                save = vipUserDao.saveVipUser(user.getId(), user.getName(), user.getMoney(), user.getTel());
+                save = vipUserDao.saveVipUser(user.getId(), user.getName(), user.getMoney(), user.getTel(), user.getType(), user.getRemarks());
             } catch (Exception ex) {
                 LOGGER.error("save vip user exception: " + ex);
                 hasExist = ex instanceof SQLIntegrityConstraintViolationException;
