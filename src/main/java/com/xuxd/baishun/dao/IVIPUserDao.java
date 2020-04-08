@@ -40,6 +40,6 @@ public interface IVIPUserDao extends JpaRepository<VipUser, String> {
 
     @Transactional
     @Modifying
-    @Query(value = "update t_vip_users set name = ?2 , tel = ?3 where id = ?1", nativeQuery = true)
-    int updateNameOrTelById(@Param("id") String id, @Param("name") String name, @Param("tel") String tel);
+    @Query(value = "update t_vip_users set name = ?2 , tel = ?3, type = ?4, remarks = ?5, update_time = current_timestamp() where id = ?1", nativeQuery = true)
+    int updateNameOrTelById(@Param("id") String id, @Param("name") String name, @Param("tel") String tel, @Param("type") int type, @Param("remarks") String remarks);
 }

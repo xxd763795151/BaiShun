@@ -20,5 +20,5 @@ public interface IVIPUserService {
 
     OutObject updateMoney(String id, BigDecimal diffMoney, Boolean isRecharge);
 
-    OutObject updateNameOrTelById(String id, String name, String tel);
+    OutObject updateNameOrTelById(VipUser user);
 }

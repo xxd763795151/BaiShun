@@ -51,7 +51,7 @@ public class VIPUserController extends BaseController {
             LOGGER.error("更新信息不能为空： " + user, e);
             return new OutObject().fail().setRtnMessage("信息不能为空");
         }
-        return userService.updateNameOrTelById(user.getId(), user.getName(), user.getTel());
+        return userService.updateNameOrTelById(user);
     }
 
     @GetMapping("/test")

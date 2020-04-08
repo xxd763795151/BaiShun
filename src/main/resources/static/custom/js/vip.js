@@ -93,7 +93,9 @@ $(function () {
                         $('#modify_vip_user_modal form span[name="id"]').text(this.id);
                         $('#modify_vip_user_modal form input[name="name"]').val(this.name);
                         $('#modify_vip_user_modal form input[name="tel"]').val(this.tel);
-
+                        $('#modify_vip_user_modal form textarea[name="remarks"]').val(this.remarks);
+                        $('#modify_vip_user_modal form input[type="radio"][value=' + this.type + ']').prop('checked', 'checked');
+                        $('#update_type').attr('checked_val', this.type);
                     }
                     $('#vip-user-list').on('click', 'tbody #' + modifyBtn, modify.bind(data))
                 }
@@ -204,6 +206,16 @@ $(function () {
                 break;
         }
         hide_hint('#money');
+    });
+
+    $('#modify_vip_user_modal form input[type="radio"]').on('change', function () {
+        toastr.info("谨慎变更会员类型");
+        var checked_val = $('#update_type').attr('checked_val');
+        if (checked_val == this.value) {
+            $('#update_type span').text('(慎重变更)');
+        } else {
+            $('#update_type span').text('将要变更会员类型');
+        }
     });
 })
 
@@ -319,11 +331,18 @@ function updateVip() {
         var id = $('#modify_vip_user_modal form span[name="id"]').text();
         var name = $('#modify_vip_user_modal form input[name="name"]').val();
         var tel = $('#modify_vip_user_modal form input[name="tel"]').val();
-
+        var type = $('#modify_vip_user_modal form input[type="radio"]:checked').val();
+        var remarks = $('#modify_vip_user_modal form textarea[name="remarks"]').val();
+        if (type == undefined) {
+            toastr.error("会员类型不能为空");
+            return false;
+        }
         var data = {
             'name': name,
             'id': id,
-            'tel': tel
+            'tel': tel,
+            'type': type,
+            'remarks': remarks
         };
         $.ajax({
             'url': '/users/vip/name/tel/update',

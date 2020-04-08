@@ -80,9 +80,20 @@ public class VIPUserServiceImpl implements IVIPUserService {
     }
 
     @Override
-    @OperationLog(id = "#{1}", type = OperationType.update, content = "id为#{1}的用户信息发生变更，变更后姓名: #{2}，电话: #{3}")
-    public OutObject updateNameOrTelById(String id, String name, String tel) {
+    @OperationLog(id = "#{id}", type = OperationType.update, content = "id为#{id}的用户信息发生变更，变更前姓名: #{name}，电话: #{tel}, 会员类型： #{type}, 备注: #{remarks}")
+    public OutObject updateNameOrTelById(VipUser user) {
         OutObject outObject = new OutObject();
-        return vipUserDao.updateNameOrTelById(id, name, tel) > 0 ? outObject.success() : outObject.fail().setRtnMessage("更新失败");
+        Optional<VipUser> optional = vipUserDao.findById(user.getId());
+        if (!optional.isPresent()) {
+            return outObject.setRtnMessage("更新失败，查询不到该账号信息");
+        }
+        outObject = vipUserDao.updateNameOrTelById(user.getId(), user.getName(), user.getTel(), user.getType(), user.getRemarks()) > 0 ? outObject.success() : outObject.fail().setRtnMessage("更新失败");
+        // 为了记录日志 ，额外做的一步操作，保存更新前的信息
+        VipUser oldUser = optional.get();
+        user.setName(oldUser.getName());
+        user.setTel(oldUser.getName());
+        user.setType(oldUser.getType());
+        user.setRemarks(oldUser.getRemarks());
+        return outObject;
     }
 }
