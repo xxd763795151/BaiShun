@@ -62,6 +62,8 @@ public class VIPUserController extends BaseController {
 //            user.setName("xu" + i);
 //            user.setMoney(new BigDecimal(100+ i));
 //            user.setTel("187" + i);
+//            user.setType(0);
+//            user.setRemarks("必须得有10个字，应该够了");
 //            userService.saveUser(user);
 //        }
         return new OutObject().success();

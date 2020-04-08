@@ -91,7 +91,7 @@ public class VIPUserServiceImpl implements IVIPUserService {
         // 为了记录日志 ，额外做的一步操作，保存更新前的信息
         VipUser oldUser = optional.get();
         user.setName(oldUser.getName());
-        user.setTel(oldUser.getName());
+        user.setTel(oldUser.getTel());
         user.setType(oldUser.getType());
         user.setRemarks(oldUser.getRemarks());
         return outObject;
