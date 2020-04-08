@@ -48,12 +48,15 @@ $(function () {
                         switch (this.type) {
                             case 0:
                                 $('#vip_user_recharge_modal form span[name="type"]').html('<span style="color: red">综合卡</span>');
+                                setRechargeMoneyRelInfo('充值金额', '请输入充值金额', '* 请输入有效金额数字', '余额');
                                 break;
                             case 1:
                                 $('#vip_user_recharge_modal form span[name="type"]').html('<span style="color: red">剪发卡</span>');
+                                setRechargeMoneyRelInfo('充值次数', '请输入充值次数', '* 请输入有效充值次数', '剩余次数');
                                 break;
                             default:
                                 $('#vip_user_recharge_modal form span[name="type"]').html('<span style="color: red">综合卡</span>');
+                                setRechargeMoneyRelInfo('充值金额', '请输入充值金额', '* 请输入有效金额数字', '余额');
                                 break;
                         }
                     }
@@ -69,12 +72,15 @@ $(function () {
                         switch (this.type) {
                             case 0:
                                 $('#vip_user_deduction_modal form span[name="type"]').html('<span style="color: red">综合卡</span>');
+                                setDeductionMoneyRelInfo('扣减金额', '请输入扣减金额', '* 请输入有效金额数字', '余额');
                                 break;
                             case 1:
                                 $('#vip_user_deduction_modal form span[name="type"]').html('<span style="color: red">剪发卡</span>');
+                                setDeductionMoneyRelInfo('扣减次数', '请输入扣减次数', '* 请输入有效扣减次数', '剩余次数');
                                 break;
                             default:
                                 $('#vip_user_deduction_modal form span[name="type"]').html('<span style="color: red">综合卡</span>');
+                                setDeductionMoneyRelInfo('扣减金额', '请输入扣减金额', '* 请输入有效金额数字', '余额');
                                 break;
                         }
                     }
@@ -135,7 +141,6 @@ $(function () {
                 "data": "money",
                 "bSearchable": false,
                 "render": function (data, type, full) {
-                    debugger;
                     var val = data;
                     switch (full.type) {
                         case 0:
@@ -208,6 +213,21 @@ function setMoneyRelInfo(labelFor, placeholder, labelHint) {
     $('#money').parent('div').next('label').html(labelHint);
 }
 
+function setDeductionMoneyRelInfo(labelFor, placeholder, labelHint, remainLabel) {
+    $('#vip_user_deduction_modal form div label[for="deduction_money"]').html(labelFor);
+    $("#deduction_money").attr('placeholder', placeholder);
+    $('#deduction_money').parent('div').next('label').html(labelHint);
+    $('#vip_user_deduction_modal form div label[name="deduction_remain"]').text(remainLabel);
+
+}
+
+function setRechargeMoneyRelInfo(labelFor, placeholder, labelHint) {
+    $('#vip_user_recharge_modal form div label[for="recharge_money"]').html(labelFor);
+    $("#recharge_money").attr('placeholder', placeholder);
+    $('#recharge_money').parent('div').next('label').html(labelHint);
+    $('#vip_user_recharge_modal form div label[name="recharge_remain"]').text(remainLabel);
+}
+
 function dataTableRefresh() {
     $('#vip-user-list').dataTable()._fnAjaxUpdate();
     $('#vip-user-list_filter input[type="search"]').val('');
@@ -222,14 +242,13 @@ $('#add_vip_user_modal').on('hide.bs.modal',
     })
 
 
-function validateMoney(id) {
+function validateMoney(id, type) {
     var pass = nullValidate(id);
     if (!pass) {
         return false;
     }
-    // 是充值金额呢，还是充值次数呢
-    debugger;
-    var isRechargeMoney = $('#type input[type="radio"]:checked').val() == '0';
+    // 是金额呢，还是次数呢
+    var isRechargeMoney = type ? $(type).text() == '综合卡' : $('#type input[type="radio"]:checked').val() == '0';
 
     var isNum = isRechargeMoney ? /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/ : /^[1-9][0-9]*$/;
     var val = $(id).val();
@@ -329,8 +348,8 @@ function updateVip() {
     }
 }
 
-function deductionMoney() {
-    if (validateMoney('#vip_user_deduction_modal form #deduction_money')) {
+function deductionMoney(type) {
+    if (validateMoney('#vip_user_deduction_modal form #deduction_money', type)) {
         var id = $('#vip_user_deduction_modal form span[name="deduction_id"]').text();
         var money = $('#vip_user_deduction_modal form #deduction_money').val();
         $.ajax({
@@ -354,8 +373,8 @@ function deductionMoney() {
     }
 }
 
-function rechargeMoney() {
-    if (validateMoney('#vip_user_recharge_modal form #recharge_money')) {
+function rechargeMoney(type) {
+    if (validateMoney('#vip_user_recharge_modal form #recharge_money', type)) {
         var id = $('#vip_user_recharge_modal form span[name="recharge_id"]').text();
         var money = $('#vip_user_recharge_modal form #recharge_money').val();
         $.ajax({

@@ -53,7 +53,7 @@ public class OperationLogHandler {
     /**
      * 解析 {@link Param} ,将Param的param字段（被拦截的方法的入参）解析为 {@link Properties}
      */
-    private Properties praseParams(List<Param> params, int complexCounts) {
+    private Properties parseParams(List<Param> params, int complexCounts) {
         Properties properties = new Properties();
         int index = 1;
         for (Param p :
@@ -142,7 +142,7 @@ public class OperationLogHandler {
                 }
             }
         }
-        return praseParams(params, complexCounts);
+        return parseParams(params, complexCounts);
     }
 
 
@@ -182,8 +182,8 @@ public class OperationLogHandler {
                     // 特殊处理
                     BigDecimal diffMoney = (BigDecimal) args[1];
                     boolean isRecharge = (boolean) args[2];
-                    content = "id为" + id + "的用户，" + (isRecharge ? "充值操作： " : "扣费操作： ");
-                    content += "金额为" + diffMoney.toString();
+                    content = "卡号为" + id + "的用户，" + (isRecharge ? "充值操作。 充值" : "扣费操作。 扣费");
+                    content += "金额/次数: " + diffMoney.toString();
                     if (!isRecharge) {
                         type = OperationType.deduction;
                     }
@@ -194,7 +194,7 @@ public class OperationLogHandler {
                 log.setType(type);
                 if (returnVal instanceof OutObject) {
                     OutObject outObject = (OutObject) returnVal;
-                    content = outObject.getRtnCode() == 0 ? "操作成功：" + content : "操作失败：" + content;
+                    content = outObject.getRtnCode() == 0 ? "[操作成功]  " + content : "[操作失败]  " + content;
                 } else {
                     content = "该操作日志不支持记录";
                 }

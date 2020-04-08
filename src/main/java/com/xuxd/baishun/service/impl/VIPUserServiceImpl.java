@@ -31,7 +31,7 @@ public class VIPUserServiceImpl implements IVIPUserService {
 
     @Override
     @OperationLog(id = "#{id}", type = OperationType.create,
-            content = "新建用户，id=#{id}, 姓名=#{name}，电话=#{tel}，充值金额=#{money}")
+            content = "新建用户，id: #{id}, 姓名: #{name}，电话: #{tel}，充值: #{money}，类型: #{type}")
     public OutObject saveUser(VipUser user) {
         OutObject outObject = new OutObject();
         Optional<VipUser> optional = vipUserDao.findById(user.getId());
@@ -80,7 +80,7 @@ public class VIPUserServiceImpl implements IVIPUserService {
     }
 
     @Override
-    @OperationLog(id = "#{1}", type = OperationType.update, content = "id为#{1}的用户信息变更，变更后姓名为#{2}，电话为#{3}")
+    @OperationLog(id = "#{1}", type = OperationType.update, content = "id为#{1}的用户信息发生变更，变更后姓名: #{2}，电话: #{3}")
     public OutObject updateNameOrTelById(String id, String name, String tel) {
         OutObject outObject = new OutObject();
         return vipUserDao.updateNameOrTelById(id, name, tel) > 0 ? outObject.success() : outObject.fail().setRtnMessage("更新失败");
