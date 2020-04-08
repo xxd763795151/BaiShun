@@ -93,7 +93,7 @@ public class VIPUserServiceImpl implements IVIPUserService {
         user.setName(oldUser.getName());
         user.setTel(oldUser.getTel());
         user.setType(oldUser.getType());
-        user.setRemarks(oldUser.getRemarks());
+        user.setRemarks(oldUser.getRemarks() != null ? oldUser.getRemarks() : " ");
         return outObject;
     }
 }
