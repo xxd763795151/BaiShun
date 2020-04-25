@@ -28,7 +28,7 @@ $(function () {
             {
                 "title": "变更类型",
                 "data": "type",
-                "bSearchable": false,
+                "bSearchable": true,
                 "render": function (data, type, full) {
                     var val = data;
                     switch (data) {
@@ -72,7 +72,7 @@ $(function () {
             "zeroRecords": "没有匹配信息",
             "loadingRecords": "请等待 - 加载中...",
             "sInfo": "显示第 _START_ 到 _END_ 条， 共 _TOTAL_ 条",
-            "search": "搜索(只支持手机号)："
+            "search": "搜索(手机号/类型)："
         }
     })
 })

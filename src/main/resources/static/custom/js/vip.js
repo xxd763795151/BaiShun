@@ -23,9 +23,12 @@ $(function () {
         'paging': true,
         'lengthChange': false,
         'searching': true,
-        'ordering': false,
+        'ordering': true,
         'info': true,
         'autoWidth': false,
+        "columnDefs": [
+            { "type": "id_sort", targets: 0 }
+        ],
         "ajax": {
             "url": 'users/vip/all',
             "dataSrc": function (json) {
@@ -106,22 +109,26 @@ $(function () {
             {
                 "title": "卡号",
                 "data": "id",
-                "bSearchable": true
+                "bSearchable": true,
+                "sortable": true
             },
             {
                 "title": "姓名",
                 "data": "name",
-                "bSearchable": true
+                "bSearchable": true,
+                "sortable": false
             },
             {
                 "title": "手机号",
                 "data": "tel",
-                "bSearchable": true
+                "bSearchable": true,
+                "sortable": false
             },
             {
                 "title": "会员类型",
                 "data": "type",
                 "bSearchable": false,
+                "sortable": false,
                 "render": function (data, type, full) {
                     var val = data;
                     switch (data) {
@@ -142,6 +149,7 @@ $(function () {
                 "title": "余额/次数",
                 "data": "money",
                 "bSearchable": false,
+                "sortable": false,
                 "render": function (data, type, full) {
                     var val = data;
                     switch (full.type) {
@@ -162,17 +170,20 @@ $(function () {
                 "title": "备注",
                 "data": "remarks",
                 "bSearchable": false,
-                "width": "20%"
+                "width": "15%",
+                "sortable": false
             },
             {
                 "title": "更新日期",
                 "data": "updateTime",
-                "bSearchable": false
+                "bSearchable": false,
+                "sortable": false
             },
             {
                 "title": "操作",
                 "data": "op",
-                "bSearchable": false
+                "bSearchable": false,
+                "sortable": false
             }
         ],
         "stripeClasses": ['name', 'id', 'tel'],
@@ -190,6 +201,11 @@ $(function () {
             "search": "搜索："
         }
     })
+    
+    function idSort() {
+        debugger;
+        var ar = arguments;
+    }
 
 
     // 单选框事件
