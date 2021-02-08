@@ -3,6 +3,8 @@
 
 # Log file
 *.log
+log/
+logs/
 
 # BlueJ files
 *.ctxt
@@ -24,3 +26,13 @@ hs_err_pid*
 .idea/
 *.iml
 target/
+
+# c++
+*.suo
+*.sdf
+Debug/
+Release/
+ipch/
+*.opensdf
+*.trace.db
+*.db.bak

@@ -7,7 +7,9 @@ CREATE TABLE t_vip_users (
   tel VARCHAR(12) NOT NULL,
   update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
 );
-
+alter table t_vip_users add column type ENUM('complex', 'haircut');
+alter table t_vip_users alter column type set default 0;
+alter table t_vip_users add column remarks default ' ';
 -- select * from t_vip_users;
 
 -- create vip users info update record talbe;
@@ -21,3 +23,9 @@ CREATE TABLE t_user_info_updated_log (
 )
 
 -- select * from t_user_info_updated_log;
+
+update T_VIP_USERS  set type = null;
+alter table T_VIP_USERS alter column type set data type enum('complex_card', 'haircut_card') ;
+update T_VIP_USERS set type = 0;
+update T_VIP_USERS set type = 1 where id like '%s%';
+alter table t_vip_users alter column type set default 0;

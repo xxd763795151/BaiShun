@@ -22,6 +22,8 @@ public class VipUser implements Serializable {
     BigDecimal money;
     String tel;
     String updateTime;
+    int type;
+    String remarks;
 
     public String getId() {
         return id;
@@ -63,6 +65,22 @@ public class VipUser implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
     @Override
     public String toString() {
         return "VipUser{" +
@@ -71,6 +89,8 @@ public class VipUser implements Serializable {
                 ", money=" + money +
                 ", tel='" + tel + '\'' +
                 ", updateTime='" + updateTime + '\'' +
+                ", type=" + type +
+                ", remarks='" + remarks + '\'' +
                 '}';
     }
 }

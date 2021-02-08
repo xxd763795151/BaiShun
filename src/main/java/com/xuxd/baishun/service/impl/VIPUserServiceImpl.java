@@ -31,7 +31,7 @@ public class VIPUserServiceImpl implements IVIPUserService {
 
     @Override
     @OperationLog(id = "#{id}", type = OperationType.create,
-            content = "新建用户，id=#{id}, 姓名=#{name}，电话=#{tel}，充值金额=#{money}")
+            content = "新建用户，id: #{id}, 姓名: #{name}，电话: #{tel}，充值: #{money}，类型: #{type}")
     public OutObject saveUser(VipUser user) {
         OutObject outObject = new OutObject();
         Optional<VipUser> optional = vipUserDao.findById(user.getId());
@@ -39,7 +39,7 @@ public class VIPUserServiceImpl implements IVIPUserService {
         int save = 0;
         if (!hasExist) {
             try {
-                save = vipUserDao.saveVipUser(user.getId(), user.getName(), user.getMoney(), user.getTel());
+                save = vipUserDao.saveVipUser(user.getId(), user.getName(), user.getMoney(), user.getTel(), user.getType(), user.getRemarks());
             } catch (Exception ex) {
                 LOGGER.error("save vip user exception: " + ex);
                 hasExist = ex instanceof SQLIntegrityConstraintViolationException;
@@ -80,9 +80,20 @@ public class VIPUserServiceImpl implements IVIPUserService {
     }
 
     @Override
-    @OperationLog(id = "#{1}", type = OperationType.update, content = "id为#{1}的用户信息变更，变更后姓名为#{2}，电话为#{3}")
-    public OutObject updateNameOrTelById(String id, String name, String tel) {
+    @OperationLog(id = "#{id}", type = OperationType.update, content = "id为#{id}的用户信息发生变更，变更前姓名: #{name}，电话: #{tel}, 会员类型： #{type}, 备注: #{remarks}")
+    public OutObject updateNameOrTelById(VipUser user) {
         OutObject outObject = new OutObject();
-        return vipUserDao.updateNameOrTelById(id, name, tel) > 0 ? outObject.success() : outObject.fail().setRtnMessage("更新失败");
+        Optional<VipUser> optional = vipUserDao.findById(user.getId());
+        if (!optional.isPresent()) {
+            return outObject.setRtnMessage("更新失败，查询不到该账号信息");
+        }
+        outObject = vipUserDao.updateNameOrTelById(user.getId(), user.getName(), user.getTel(), user.getType(), user.getRemarks()) > 0 ? outObject.success() : outObject.fail().setRtnMessage("更新失败");
+        // 为了记录日志 ，额外做的一步操作，保存更新前的信息
+        VipUser oldUser = optional.get();
+        user.setName(oldUser.getName());
+        user.setTel(oldUser.getTel());
+        user.setType(oldUser.getType());
+        user.setRemarks(oldUser.getRemarks() != null ? oldUser.getRemarks() : " ");
+        return outObject;
     }
 }

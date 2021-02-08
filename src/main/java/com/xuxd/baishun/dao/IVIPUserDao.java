@@ -19,22 +19,27 @@ import java.util.Optional;
 public interface IVIPUserDao extends JpaRepository<VipUser, String> {
 
     @Transactional
-    @Query(value = "insert into t_vip_users(id, name, money, tel) values (:id, :name, :money, :tel)", nativeQuery = true)
+    @Query(value = "insert into t_vip_users(id, name, money, tel, type, remarks) values (:id, :name, :money, :tel, :type, :remarks)", nativeQuery = true)
     @Modifying
-    int saveVipUser(@Param("id") String id, @Param("name") String name, @Param("money") BigDecimal money, @Param("tel") String tel);
+    int saveVipUser(@Param("id") String id,
+                    @Param("name") String name,
+                    @Param("money") BigDecimal money,
+                    @Param("tel") String tel,
+                    @Param("type") int type,
+                    @Param("remarks") String remarks);
 
-    @Query(value = "select id, name, money, tel, update_time from t_vip_users", nativeQuery = true)
+    @Query(value = "select id, name, money, tel, update_time, type, remarks from t_vip_users order by update_time desc", nativeQuery = true)
     List<VipUser> findAllVipUsers();
 
     @Transactional
     @Modifying
-    @Query(value = "update t_vip_users set money = :money where id = :id", nativeQuery = true)
+    @Query(value = "update t_vip_users set money = :money, update_time=current_timestamp() where id = :id", nativeQuery = true)
     int updateMoneyById(@Param("id") String id, @Param("money") BigDecimal money);
 
     Optional<VipUser> findById(String id);
 
     @Transactional
     @Modifying
-    @Query(value = "update t_vip_users set name = ?2 , tel = ?3 where id = ?1", nativeQuery = true)
-    int updateNameOrTelById(@Param("id") String id, @Param("name") String name, @Param("tel") String tel);
+    @Query(value = "update t_vip_users set name = ?2 , tel = ?3, type = ?4, remarks = ?5, update_time = current_timestamp() where id = ?1", nativeQuery = true)
+    int updateNameOrTelById(@Param("id") String id, @Param("name") String name, @Param("tel") String tel, @Param("type") int type, @Param("remarks") String remarks);
 }

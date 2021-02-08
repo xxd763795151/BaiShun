@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="500,400" caption="0,0,0,36" roundcorner="4,4" trayiconid="134" traytiptext="start" >
+	<Font name="宋体" size="45" bold="true" />
+	<Default name="VScrollBar" value="button1normalimage=&quot;file='scrollbar.bmp' source='0,90,16,106' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='scrollbar.bmp' source='18,90,34,106' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='scrollbar.bmp' source='36,90,52,106' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='scrollbar.bmp' source='54,90,70,106' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='scrollbar.bmp' source='0,108,16,124' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='scrollbar.bmp' source='18,108,34,124' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='scrollbar.bmp' source='36,108,52,124' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='scrollbar.bmp' source='54,108,70,124' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='scrollbar.bmp' source='0,126,16,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='scrollbar.bmp' source='18,126,34,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='scrollbar.bmp' source='36,126,52,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='scrollbar.bmp' source='54,126,70,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='scrollbar.bmp' source='0,144,16,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='scrollbar.bmp' source='18,144,34,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='scrollbar.bmp' source='36,144,52,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='scrollbar.bmp' source='54,144,70,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='scrollbar.bmp' source='0,162,16,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='scrollbar.bmp' source='18,162,34,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='scrollbar.bmp' source='36,162,52,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='scrollbar.bmp' source='54,162,70,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+	<VerticalLayout inset="4,0,4,4" bkimage="file='winbk.bmp' corner='4,48,4,4' mask='#FFFF00FF'" >
+		<HorizontalLayout height="32" inset="2,2,2,0">
+			<Label text="启动" width="80" />
+			<Control />
+			<Button name="minbtn" padding="0,1,0,1" width="36" maxheight="16" tooltip="最小化" normalimage="file='sys_dlg_min.png' mask='#FFFF00FF' source='26,1,52,16'" hotimage="file='sys_dlg_min.png' mask='#FFFF00FF' source='52,1,77,16'" pushedimage="file='sys_dlg_min.png' mask='#FFFF00FF' source='0,1,26,16'" />
+			<Button name="closebtn" width="42" maxheight="18" tooltip="点击这里直接退出" normalimage="file='frame_btn_close_normal.bmp' mask='#FFFF00FF'" hotimage="file='frame_btn_close_down.bmp' mask='#FFFF00FF'" pushedimage="file='frame_btn_close_down.bmp' mask='#FFFF00FF'"/>
+		</HorizontalLayout>
+		<Text height="60" bkcolor="#FF76EE00" text="柏舜客户端" font="0" align="center" />
+		<Progress height="10" bkcolor="#FFF8B343" />
+		<Container bkcolor="#FFFFFFFF" >
+			<VerticalLayout bkimage="timg.png">
+				<HorizontalLayout height="50" bkcolor="#FFF8DCFF">
+					<Label text="点击右边的启动按钮开始启动服务器---->" float="true" pos="30, 20, 290, 42" />
+					<Button name="startBtn" text="启动" float="true" pos="300, 15, 450, 45" tooltip="点击这里启动服务器" normalimage="button_nor.bmp" hotimage="button_over.bmp" pushedimage="button_down.bmp" />
+				</HorizontalLayout>
+				<HorizontalLayout name="progressHorizontalLayout" padding="0, 5, 0, 5">
+					<Progress name="startProgress" min="0" max="100" bkimage="start.png" value="0" 
+						float="true" pos="30, 15, 450, 45"  bordercolor="0xFF000000" foreimage="tabbar_normal.png" align="center" />
+				</HorizontalLayout>
+				<HorizontalLayout name="UrlHorizontalLayout"  padding="0, -200, 0, 5" visible="false">
+					<VerticalLayout>
+						<Label text="复制下面链接在浏览器打开" float="true" pos="10, 0, 200, 42" textcolor="0xFFFF0000" />
+						<Edit name="urledit" text="" textcolor="0xFFFF0000" readonly="true" float="true" pos="10, 45, 300, 70" colorhsl="true" bkcolor="0x00000000" />
+						<Button name="copybtn" text="复制" float="true" pos="10, 80, 70, 100" tooltip="点击这里启动服务器" normalimage="button_nor.bmp" hotimage="button_over.bmp" pushedimage="button_down.bmp" />
+					</VerticalLayout>
+				</HorizontalLayout>
+			</VerticalLayout>
+		</Container>
+    </VerticalLayout>
+</Window>
