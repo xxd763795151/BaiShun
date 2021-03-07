@@ -14,3 +14,43 @@ the VIP users information management for barbershop
 # 技术栈
 
 spring boot + h2 + jpa + bootstrap， c++ + duilib
+
+
+
+# NISI打包步骤
+
+1. 先从网上下载一个nisi的安装包，并安装到windows系统上
+
+2. 设置要打包的目录格式，格式如下，目录名就是这样，不要乱改：
+
+   > baishun_setup
+   >
+   > ----conf
+   >
+   > ----h2
+   >
+   > ----jre1.8.0_66
+   >
+   > ----skin
+   >
+   > ----baishun.jar
+   >
+   > ----BaiShunStart.exe
+   >
+   > ----BaishunStart.ico
+   >
+   > ----DuiLib_u.dll
+   >
+   > ----favicon.ico
+   >
+   > ----start.bat
+   >
+   > bs_setup.nsi
+
+   上面是根目录（baishun_setup）和它下面的1级子目录或文件，将上面的目录及下面的内容从源码里copy出来整理为这个结构，关于baishun.jar可以在web工程目录下执行./package.bat打包，从target目录下copy过来。
+
+   默认没有开启邮箱备份，如果需要开启，可以修改start.bat的启动参数配置
+
+   bs_setup.nsi要和baishun_setup目录同级
+
+3. 右键点击bs_setup.nsi，选择Compile NSIS Script，或者下面带压缩那个，也可以打开NSIS，选择编译脚本，执行完成后，便会生成一个exe的安装包
